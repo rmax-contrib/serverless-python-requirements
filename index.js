@@ -69,7 +69,8 @@ class ServerlessPythonRequirements {
         cmd = 'docker';
         options = [
           'run', '--rm',
-          '-u', process.getuid() + ':' + process.getgid(),
+          '-u', (process.platform === 'win32' ? process.env.USERNAME
+                 : `${process.getuid()}:${process.getgid()}`),
           '-v', `${this.serverless.config.servicePath}:/var/task:z`,
           `lambci/lambda:build-${runtime}`,
         ];
