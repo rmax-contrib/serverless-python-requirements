@@ -102,11 +102,14 @@ class ServerlessPythonRequirements {
 
         options = [
           'run', '--rm',
-          '-u', process.getuid() + ':' + process.getgid(),
+          //'-u', process.getuid() + ':' + process.getgid(),
           '-v', `${this.serverless.config.servicePath}:/var/task:z`,
           `${image}`,
         ];
         options.push(...pipCmd);
+        // Skip cache when using docker as the FS is ephemeral and avoids
+        // issues with having the cache with different uid.
+        options.push('--no-cache-dir');
       } else {
         cmd = pipCmd[0];
         options = pipCmd.slice(1);
